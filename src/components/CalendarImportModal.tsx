@@ -55,13 +55,28 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
       setStep('fetching');
       setError(null);
 
-      const provider = new GoogleAuthProvider();
-      provider.addScope('https://www.googleapis.com/auth/calendar.readonly');
-      
-      // Prompt user to grant calendar access
-      const result = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      let token = localStorage.getItem('google_calendar_token');
+      const tokenExpiry = localStorage.getItem('google_calendar_token_expiry');
+      const now = Date.now();
+
+      // Check if we have a valid cached token (valid for 1 hour, but let's check if it's within 55 mins)
+      const isTokenValid = token && tokenExpiry && (parseInt(tokenExpiry) > now);
+
+      if (!isTokenValid) {
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/calendar.readonly');
+        
+        // Prompt user to grant calendar access
+        const result = await signInWithPopup(auth, provider);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        token = credential?.accessToken || null;
+
+        if (token) {
+          // Store token with 55 minutes expiry (standard is 1 hour)
+          localStorage.setItem('google_calendar_token', token);
+          localStorage.setItem('google_calendar_token_expiry', (now + 55 * 60 * 1000).toString());
+        }
+      }
 
       if (!token) {
         throw new Error('無法取得 Google 日曆授權');
@@ -70,11 +85,34 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
       const timeMin = startDate.toISOString();
       const timeMax = endDate.toISOString();
       
-      const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`, {
+      let response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
+
+      // If token expired or invalid, try one more time with fresh login
+      if (response.status === 401) {
+        localStorage.removeItem('google_calendar_token');
+        localStorage.removeItem('google_calendar_token_expiry');
+        
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/calendar.readonly');
+        const result = await signInWithPopup(auth, provider);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        token = credential?.accessToken || null;
+
+        if (!token) throw new Error('無法取得 Google 日曆授權');
+
+        localStorage.setItem('google_calendar_token', token);
+        localStorage.setItem('google_calendar_token_expiry', (Date.now() + 55 * 60 * 1000).toString());
+
+        response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
 
       if (!response.ok) {
         throw new Error('讀取日曆失敗，請確認是否已在 GCP 啟用 Google Calendar API');
@@ -276,12 +314,24 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
                   <p className="text-slate-600 dark:text-slate-400">
                     共找到 <span className="font-bold text-slate-900 dark:text-white">{events.length}</span> 個行程。您可以修改分類，並選擇要加入的任務。
                   </p>
-                  <button
-                    onClick={() => setStep('date-select')}
-                    className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
-                  >
-                    重新選擇日期
-                  </button>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('google_calendar_token');
+                        localStorage.removeItem('google_calendar_token_expiry');
+                        setStep('date-select');
+                      }}
+                      className="text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+                    >
+                      切換 Google 帳號
+                    </button>
+                    <button
+                      onClick={() => setStep('date-select')}
+                      className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+                    >
+                      重新選擇日期
+                    </button>
+                  </div>
                 </div>
 
                 {events.length === 0 ? (
