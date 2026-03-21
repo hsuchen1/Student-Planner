@@ -10,6 +10,7 @@ import { cn } from '../utils/cn';
 import { ConfirmModal } from './ConfirmModal';
 import { useTheme } from '../ThemeContext';
 import { useReminders } from '../hooks/useReminders';
+import { Logo } from './Logo';
 
 export function Dashboard() {
   const { currentColor } = useTheme();
@@ -58,10 +59,7 @@ export function Dashboard() {
 
       {/* Mobile Header */}
       <div className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between sticky top-0 z-20 transition-colors">
-        <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-          <BookOpen className="w-6 h-6 text-theme-primary" />
-          <span className="text-lg">學生記事本</span>
-        </div>
+        <Logo size={24} className="scale-90 origin-left" />
         <div className="flex items-center gap-1">
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
@@ -80,13 +78,8 @@ export function Dashboard() {
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex sticky top-0 left-0 h-screen w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col z-10 transition-colors">
-        <div className="p-6 flex items-center justify-between">
-          <div className="flex items-center gap-3 font-bold text-xl text-slate-900 dark:text-white">
-            <div className="w-10 h-10 bg-theme-secondary text-theme-primary rounded-xl flex items-center justify-center">
-              <BookOpen className="w-6 h-6" />
-            </div>
-            <span>學生記事本</span>
-          </div>
+        <div className="p-6">
+          <Logo size={32} />
         </div>
 
         <nav className="flex-1 px-4 space-y-2">
