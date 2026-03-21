@@ -64,7 +64,7 @@ export function Tasks() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [auth.currentUser?.uid]);
 
   useEffect(() => {
     const sorted = [...tasks].sort((a, b) => {

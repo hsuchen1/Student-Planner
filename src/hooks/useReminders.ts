@@ -36,7 +36,7 @@ export function useReminders() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [auth.currentUser?.uid]);
 
   // Time-based check every minute
   useEffect(() => {

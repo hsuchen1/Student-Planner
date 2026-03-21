@@ -58,7 +58,7 @@ export function Notes() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [auth.currentUser?.uid]);
 
   const handleAddNote = async (e: React.FormEvent) => {
     e.preventDefault();
