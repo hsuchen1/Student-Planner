@@ -9,6 +9,9 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { Auth } from './components/Auth';
 import { Dashboard } from './components/Dashboard';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ThemeProvider } from './ThemeContext';
+import { Logo } from './components/Logo';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -17,7 +20,10 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
+      // Add a small delay for a smoother splash screen experience
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     });
 
     // Initialize dark mode based on system preference
@@ -33,15 +39,29 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center transition-colors">
-        <div className="w-10 h-10 border-4 border-indigo-200 dark:border-indigo-900 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin" />
+      <div className="min-h-screen bg-white dark:bg-slate-950 flex flex-col items-center justify-center transition-colors">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="flex flex-col items-center gap-6"
+        >
+          <Logo size={48} className="flex-col gap-4" />
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-theme-primary animate-bounce [animation-delay:-0.3s]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-theme-primary animate-bounce [animation-delay:-0.15s]" />
+            <div className="w-1.5 h-1.5 rounded-full bg-theme-primary animate-bounce" />
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <ErrorBoundary>
-      {user ? <Dashboard /> : <Auth />}
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary>
+        {user ? <Dashboard /> : <Auth />}
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }

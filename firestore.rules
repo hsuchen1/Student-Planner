@@ -73,7 +73,7 @@ service cloud.firestore {
 
     // Domain Validators
     function isValidTask(data) {
-      return hasOnlyAllowedFields(['userId', 'title', 'type', 'dueDate', 'completed', 'createdAt', 'order', 'googleEventId']) &&
+      return hasOnlyAllowedFields(['userId', 'title', 'type', 'dueDate', 'completed', 'createdAt', 'order', 'googleEventId', 'notificationsEnabled']) &&
              data.userId is string && data.userId.size() > 0 &&
              data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
              data.type in ['assignment', 'exam', 'report', 'project', 'other'] &&
@@ -81,7 +81,8 @@ service cloud.firestore {
              data.completed is bool &&
              isValidDateString(data.createdAt) &&
              (!('order' in data) || data.order is number) &&
-             (!('googleEventId' in data) || (data.googleEventId is string && data.googleEventId.size() <= 200));
+             (!('googleEventId' in data) || (data.googleEventId is string && data.googleEventId.size() <= 200)) &&
+             (!('notificationsEnabled' in data) || data.notificationsEnabled is bool);
     }
 
     function isValidNote(data) {
