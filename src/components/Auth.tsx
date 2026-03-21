@@ -3,7 +3,6 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '../firebase';
 import { BookOpen, LogIn } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Logo } from './Logo';
 
 export function Auth() {
   const [loading, setLoading] = useState(false);
@@ -30,9 +29,10 @@ export function Auth() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 max-w-md w-full text-center"
       >
-        <div className="flex justify-center mb-6">
-          <Logo size={48} className="flex-col gap-4" />
+        <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <BookOpen className="w-8 h-8" />
         </div>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">學生記事本</h1>
         <p className="text-slate-500 dark:text-slate-400 mb-8">
           跨裝置輕鬆管理您的作業、考試與學習筆記。
         </p>

@@ -1,21 +1,15 @@
 import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
-import { motion, AnimatePresence } from 'motion/react';
-import { BookOpen, CheckSquare, LogOut, Moon, Sun, Settings as SettingsIcon, Bell } from 'lucide-react';
+import { motion } from 'motion/react';
+import { BookOpen, CheckSquare, LogOut, Moon, Sun } from 'lucide-react';
 import { Tasks } from './Tasks';
 import { Notes } from './Notes';
-import { Settings } from './Settings';
 import { cn } from '../utils/cn';
 import { ConfirmModal } from './ConfirmModal';
-import { useTheme } from '../ThemeContext';
-import { useReminders } from '../hooks/useReminders';
-import { Logo } from './Logo';
 
 export function Dashboard() {
-  const { currentColor } = useTheme();
-  useReminders(); // Initialize reminder check logic
-  const [activeTab, setActiveTab] = useState<'tasks' | 'notes' | 'settings'>('tasks');
+  const [activeTab, setActiveTab] = useState<'tasks' | 'notes'>('tasks');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -44,7 +38,6 @@ export function Dashboard() {
   const navItems = [
     { id: 'tasks', label: '任務與考試', icon: CheckSquare },
     { id: 'notes', label: '學習筆記', icon: BookOpen },
-    { id: 'settings', label: '通知與設定', icon: SettingsIcon },
   ];
 
   return (
@@ -59,11 +52,14 @@ export function Dashboard() {
 
       {/* Mobile Header */}
       <div className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between sticky top-0 z-20 transition-colors">
-        <Logo size={24} className="scale-90 origin-left" />
+        <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+          <BookOpen className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+          <span className="text-lg">學生記事本</span>
+        </div>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 text-slate-500 dark:text-slate-400 hover:text-theme-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-2 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
           >
             {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
           </button>
@@ -78,8 +74,13 @@ export function Dashboard() {
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex sticky top-0 left-0 h-screen w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col z-10 transition-colors">
-        <div className="p-6">
-          <Logo size={32} />
+        <div className="p-6 flex items-center justify-between">
+          <div className="flex items-center gap-3 font-bold text-xl text-slate-900 dark:text-white">
+            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <span>學生記事本</span>
+          </div>
         </div>
 
         <nav className="flex-1 px-4 space-y-2">
@@ -91,21 +92,14 @@ export function Dashboard() {
                 key={item.id}
                 onClick={() => setActiveTab(item.id as any)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all text-left group relative overflow-hidden",
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors text-left",
                   isActive
-                    ? "bg-theme-secondary text-theme-primary"
+                    ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
                 )}
               >
-                <Icon className={cn("w-5 h-5 transition-colors", isActive ? "text-theme-primary" : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300")} />
+                <Icon className={cn("w-5 h-5", isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 dark:text-slate-500")} />
                 {item.label}
-                {isActive && (
-                  <motion.div
-                    layoutId="active-pill"
-                    className="absolute left-0 w-1 h-6 bg-theme-primary rounded-r-full"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                  />
-                )}
               </button>
             );
           })}
@@ -147,19 +141,15 @@ export function Dashboard() {
 
       {/* Main Content */}
       <main className="flex-1 p-4 pb-24 md:pb-8 md:p-8 overflow-x-hidden">
-        <div className="max-w-4xl mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              {activeTab === 'tasks' ? <Tasks /> : activeTab === 'notes' ? <Notes /> : <Settings />}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="max-w-4xl mx-auto"
+        >
+          {activeTab === 'tasks' ? <Tasks /> : <Notes />}
+        </motion.div>
       </main>
 
       {/* Mobile Bottom Navigation */}
@@ -172,19 +162,12 @@ export function Dashboard() {
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
               className={cn(
-                "flex-1 flex flex-col items-center justify-center py-3 gap-1 transition-colors relative",
-                isActive ? "text-theme-primary" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                "flex-1 flex flex-col items-center justify-center py-3 gap-1 transition-colors",
+                isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               )}
             >
-              <Icon className={cn("w-6 h-6 transition-transform", isActive ? "scale-110" : "scale-100")} />
-              <span className="text-[10px] font-medium">{item.label}</span>
-              {isActive && (
-                <motion.div
-                  layoutId="mobile-active-indicator"
-                  className="absolute top-0 w-12 h-1 bg-theme-primary rounded-b-full"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              )}
+              <Icon className={cn("w-6 h-6", isActive ? "fill-indigo-50 dark:fill-indigo-500/20" : "")} />
+              <span className="text-xs font-medium">{item.label}</span>
             </button>
           );
         })}

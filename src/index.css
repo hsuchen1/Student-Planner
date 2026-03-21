@@ -1,38 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Inter", "Noto Sans TC", ui-sans-serif, system-ui, sans-serif;
-  --color-theme-primary: var(--theme-color);
-  --color-theme-secondary: var(--theme-color-secondary);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   --swipe-delete-bg: #fee2e2;
   --swipe-complete-bg: #d1fae5;
-  --theme-color: #4f46e5; /* Default Indigo 600 */
-  --theme-color-secondary: #e0e7ff; /* Default Indigo 100 */
 }
 
 .dark {
   --swipe-delete-bg: #7f1d1d;
   --swipe-complete-bg: #064e3b;
-  --theme-color: #6366f1; /* Default Indigo 500 */
-  --theme-color-secondary: #1e1b4b; /* Default Indigo 900 */
 }
 
 body {
   font-family: var(--font-sans);
   -webkit-tap-highlight-color: transparent;
-  line-height: 1.6;
-  letter-spacing: 0.015em;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -0.01em;
-  line-height: 1.25;
 }
 
 @layer utilities {

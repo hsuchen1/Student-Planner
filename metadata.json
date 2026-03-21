@@ -1,5 +1,5 @@
 {
   "name": "Student Planner",
   "description": "A student planner app to track assignments, exams, reports, and notes across devices.",
-  "requestFramePermissions": ["notifications"]
+  "requestFramePermissions": []
 }

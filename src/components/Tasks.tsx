@@ -13,7 +13,7 @@ import { motion, AnimatePresence, Reorder, useMotionValue, useTransform } from '
 import { ConfirmModal } from './ConfirmModal';
 import { CalendarImportModal } from './CalendarImportModal';
 
-export interface Task {
+interface Task {
   id: string;
   userId: string;
   title: string;
@@ -22,7 +22,6 @@ export interface Task {
   completed: boolean;
   createdAt: string;
   order?: number;
-  notificationsEnabled?: boolean;
 }
 
 export function Tasks() {
@@ -64,7 +63,7 @@ export function Tasks() {
     });
 
     return () => unsubscribe();
-  }, [auth.currentUser?.uid]);
+  }, []);
 
   useEffect(() => {
     const sorted = [...tasks].sort((a, b) => {
@@ -94,7 +93,6 @@ export function Tasks() {
         completed: false,
         createdAt: now,
         order: maxOrder + 1,
-        notificationsEnabled: false,
       });
 
       setNewTask({
@@ -204,7 +202,7 @@ export function Tasks() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-4 border-theme-secondary border-t-theme-primary rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
       </div>
     );
   }
@@ -249,14 +247,14 @@ export function Tasks() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsImportModalOpen(true)}
-                className="bg-white dark:bg-slate-900 text-theme-primary border border-theme-secondary hover:bg-theme-secondary/30 p-2.5 md:px-4 md:py-2 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm"
+                className="bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 p-2.5 md:px-4 md:py-2 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm"
               >
                 <CalendarIcon className="w-6 h-6 md:w-5 md:h-5" />
                 <span className="hidden md:inline">匯入日曆</span>
               </button>
               <button
                 onClick={() => { setIsAdding(true); setEditingTask(null); }}
-                className="bg-theme-primary text-white hover:opacity-90 p-2.5 md:px-4 md:py-2 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm"
+                className="bg-indigo-600 text-white hover:bg-indigo-700 p-2.5 md:px-4 md:py-2 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm"
               >
                 <Plus className="w-6 h-6 md:w-5 md:h-5" />
                 <span className="hidden md:inline">新增任務</span>
@@ -288,7 +286,7 @@ export function Tasks() {
                   value={newTask.title}
                   onChange={e => setNewTask({ ...newTask, title: e.target.value })}
                   placeholder="例如：微積分第五章作業"
-                  className="w-full px-4 py-3 md:py-2 text-base bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary transition-all"
+                  className="w-full px-4 py-3 md:py-2 text-base bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 />
               </div>
               <div className="space-y-1.5">
@@ -296,7 +294,7 @@ export function Tasks() {
                 <select
                   value={newTask.type}
                   onChange={e => setNewTask({ ...newTask, type: e.target.value as Task['type'] })}
-                  className="w-full px-4 py-3 md:py-2 text-base bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary transition-all"
+                  className="w-full px-4 py-3 md:py-2 text-base bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 >
                   <option value="assignment">作業 (Assignment)</option>
                   <option value="exam">考試 (Exam)</option>
@@ -317,7 +315,7 @@ export function Tasks() {
                   dateFormat="yyyy/MM/dd aa h:mm"
                   locale="zh-TW"
                   placeholderText="選擇到期時間"
-                  className="w-full px-4 py-3 md:py-2 text-base bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary transition-all"
+                  className="w-full px-4 py-3 md:py-2 text-base bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   wrapperClassName="w-full"
                 />
               </div>
@@ -332,7 +330,7 @@ export function Tasks() {
               </button>
               <button
                 type="submit"
-                className="px-5 py-2.5 md:px-4 md:py-2 bg-theme-primary text-white hover:opacity-90 rounded-xl font-medium transition-colors"
+                className="px-5 py-2.5 md:px-4 md:py-2 bg-slate-900 dark:bg-indigo-600 text-white hover:bg-slate-800 dark:hover:bg-indigo-700 rounded-xl font-medium transition-colors"
               >
                 儲存任務
               </button>
@@ -347,28 +345,28 @@ export function Tasks() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             onSubmit={handleUpdateTask}
-            className="bg-theme-secondary/30 dark:bg-theme-secondary/10 p-5 md:p-6 rounded-2xl shadow-sm border border-theme-secondary dark:border-theme-primary/30 space-y-4"
+            className="bg-indigo-50/50 dark:bg-indigo-900/20 p-5 md:p-6 rounded-2xl shadow-sm border border-indigo-100 dark:border-indigo-500/30 space-y-4"
           >
             <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-bold text-theme-primary">編輯任務</h3>
+              <h3 className="text-lg font-bold text-indigo-900 dark:text-indigo-100">編輯任務</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5 md:col-span-2">
-                <label className="text-sm font-medium text-theme-primary/70">標題</label>
+                <label className="text-sm font-medium text-indigo-900/70 dark:text-indigo-200/70">標題</label>
                 <input
                   type="text"
                   required
                   value={editingTask.title}
                   onChange={e => setEditingTask({ ...editingTask, title: e.target.value })}
-                  className="w-full px-4 py-3 md:py-2 text-base bg-white dark:bg-slate-900 border border-theme-secondary dark:border-theme-primary/30 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary transition-all"
+                  className="w-full px-4 py-3 md:py-2 text-base bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/30 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-theme-primary/70">類型</label>
+                <label className="text-sm font-medium text-indigo-900/70 dark:text-indigo-200/70">類型</label>
                 <select
                   value={editingTask.type}
                   onChange={e => setEditingTask({ ...editingTask, type: e.target.value as Task['type'] })}
-                  className="w-full px-4 py-3 md:py-2 text-base bg-white dark:bg-slate-900 border border-theme-secondary dark:border-theme-primary/30 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary transition-all"
+                  className="w-full px-4 py-3 md:py-2 text-base bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/30 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 >
                   <option value="assignment">作業 (Assignment)</option>
                   <option value="exam">考試 (Exam)</option>
@@ -378,7 +376,7 @@ export function Tasks() {
                 </select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-theme-primary/70">截止日期與時間</label>
+                <label className="text-sm font-medium text-indigo-900/70 dark:text-indigo-200/70">截止日期與時間</label>
                 <DatePicker
                   selected={editingTask.dueDate ? new Date(editingTask.dueDate) : null}
                   onChange={(date: Date | null) => setEditingTask({ ...editingTask, dueDate: date ? date.toISOString() : '' })}
@@ -389,7 +387,7 @@ export function Tasks() {
                   dateFormat="yyyy/MM/dd aa h:mm"
                   locale="zh-TW"
                   placeholderText="選擇到期時間"
-                  className="w-full px-4 py-3 md:py-2 text-base bg-white dark:bg-slate-900 border border-theme-secondary dark:border-theme-primary/30 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary transition-all"
+                  className="w-full px-4 py-3 md:py-2 text-base bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-500/30 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                   wrapperClassName="w-full"
                 />
               </div>
@@ -398,13 +396,13 @@ export function Tasks() {
               <button
                 type="button"
                 onClick={() => setEditingTask(null)}
-                className="px-5 py-2.5 md:px-4 md:py-2 text-theme-primary hover:bg-theme-secondary/50 rounded-xl font-medium transition-colors"
+                className="px-5 py-2.5 md:px-4 md:py-2 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-xl font-medium transition-colors"
               >
                 取消
               </button>
               <button
                 type="submit"
-                className="px-5 py-2.5 md:px-4 md:py-2 bg-theme-primary text-white hover:opacity-90 rounded-xl font-medium transition-colors"
+                className="px-5 py-2.5 md:px-4 md:py-2 bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 rounded-xl font-medium transition-colors"
               >
                 更新任務
               </button>
@@ -417,36 +415,15 @@ export function Tasks() {
         {localPending.length > 0 ? (
           <div className="space-y-3">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <Clock className="w-5 h-5 text-theme-primary" />
+              <Clock className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
               待辦事項 ({localPending.length})
             </h2>
             
             {sortMode === 'custom' ? (
               <Reorder.Group axis="y" values={localPending} onReorder={setLocalPending} className="space-y-3 md:space-y-2">
-                <AnimatePresence initial={false}>
-                  {localPending.map(task => (
-                    <Reorder.Item key={task.id} value={task} onDragEnd={() => saveOrder(localPending)}>
-                      <TaskItem 
-                        task={task} 
-                        onToggle={toggleComplete} 
-                        onEdit={() => { setEditingTask(task); setIsAdding(false); }}
-                        onDelete={() => setTaskToDelete(task.id)} 
-                        getTypeIcon={getTypeIcon} 
-                        getTypeLabel={getTypeLabel} 
-                        getTypeColor={getTypeColor}
-                        formatDueDate={formatDueDate} 
-                        isDraggable={true}
-                      />
-                    </Reorder.Item>
-                  ))}
-                </AnimatePresence>
-              </Reorder.Group>
-            ) : (
-              <div className="space-y-3 md:space-y-2">
-                <AnimatePresence initial={false}>
-                  {localPending.map(task => (
+                {localPending.map(task => (
+                  <Reorder.Item key={task.id} value={task} onDragEnd={() => saveOrder(localPending)}>
                     <TaskItem 
-                      key={task.id} 
                       task={task} 
                       onToggle={toggleComplete} 
                       onEdit={() => { setEditingTask(task); setIsAdding(false); }}
@@ -455,10 +432,27 @@ export function Tasks() {
                       getTypeLabel={getTypeLabel} 
                       getTypeColor={getTypeColor}
                       formatDueDate={formatDueDate} 
-                      isDraggable={false}
+                      isDraggable={true}
                     />
-                  ))}
-                </AnimatePresence>
+                  </Reorder.Item>
+                ))}
+              </Reorder.Group>
+            ) : (
+              <div className="space-y-3 md:space-y-2">
+                {localPending.map(task => (
+                  <TaskItem 
+                    key={task.id} 
+                    task={task} 
+                    onToggle={toggleComplete} 
+                    onEdit={() => { setEditingTask(task); setIsAdding(false); }}
+                    onDelete={() => setTaskToDelete(task.id)} 
+                    getTypeIcon={getTypeIcon} 
+                    getTypeLabel={getTypeLabel} 
+                    getTypeColor={getTypeColor}
+                    formatDueDate={formatDueDate} 
+                    isDraggable={false}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -477,22 +471,20 @@ export function Tasks() {
               已完成 ({completedTasks.length})
             </h2>
             <div className="space-y-3 md:space-y-2 opacity-60">
-              <AnimatePresence initial={false}>
-                {completedTasks.map(task => (
-                  <TaskItem 
-                    key={task.id} 
-                    task={task} 
-                    onToggle={toggleComplete} 
-                    onEdit={() => { setEditingTask(task); setIsAdding(false); }}
-                    onDelete={() => setTaskToDelete(task.id)} 
-                    getTypeIcon={getTypeIcon} 
-                    getTypeLabel={getTypeLabel} 
-                    getTypeColor={getTypeColor}
-                    formatDueDate={formatDueDate} 
-                    isDraggable={false}
-                  />
-                ))}
-              </AnimatePresence>
+              {completedTasks.map(task => (
+                <TaskItem 
+                  key={task.id} 
+                  task={task} 
+                  onToggle={toggleComplete} 
+                  onEdit={() => { setEditingTask(task); setIsAdding(false); }}
+                  onDelete={() => setTaskToDelete(task.id)} 
+                  getTypeIcon={getTypeIcon} 
+                  getTypeLabel={getTypeLabel} 
+                  getTypeColor={getTypeColor}
+                  formatDueDate={formatDueDate} 
+                  isDraggable={false}
+                />
+              ))}
             </div>
           </div>
         )}
@@ -513,13 +505,7 @@ function TaskItem({ task, onToggle, onEdit, onDelete, getTypeIcon, getTypeLabel,
   const iconOpacityRight = useTransform(x, [-50, 0], [1, 0]);
 
   return (
-    <motion.div 
-      layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-      className="relative overflow-hidden rounded-2xl mb-3 md:mb-2 group"
-    >
+    <div className="relative overflow-hidden rounded-2xl mb-3 md:mb-2 group">
       {/* Swipe Background Actions */}
       {!isDraggable && (
         <motion.div 
@@ -538,6 +524,10 @@ function TaskItem({ task, onToggle, onEdit, onDelete, getTypeIcon, getTypeLabel,
       )}
 
       <motion.div
+        layout
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
         style={{ x }}
         drag={!isDraggable ? "x" : false}
         dragConstraints={{ left: 0, right: 0 }}
@@ -565,7 +555,7 @@ function TaskItem({ task, onToggle, onEdit, onDelete, getTypeIcon, getTypeLabel,
         <button
           onPointerDown={(e) => e.stopPropagation()}
           onClick={() => onToggle(task)}
-          className="mt-0.5 flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-theme-primary transition-colors focus:outline-none p-1 -ml-1"
+          className="mt-0.5 flex-shrink-0 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors focus:outline-none p-1 -ml-1"
         >
           {task.completed ? (
             <CheckCircle2 className="w-7 h-7 md:w-6 md:h-6 text-emerald-500 dark:text-emerald-400" />
@@ -604,7 +594,7 @@ function TaskItem({ task, onToggle, onEdit, onDelete, getTypeIcon, getTypeLabel,
           <button
             onPointerDown={(e) => e.stopPropagation()}
             onClick={() => onEdit(task)}
-            className="p-2 text-slate-400 dark:text-slate-500 hover:text-theme-primary hover:bg-theme-secondary/30 rounded-lg transition-colors focus:outline-none"
+            className="p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 rounded-lg transition-colors focus:outline-none"
           >
             <Edit2 className="w-5 h-5 md:w-4 md:h-4" />
           </button>
@@ -617,6 +607,6 @@ function TaskItem({ task, onToggle, onEdit, onDelete, getTypeIcon, getTypeLabel,
           </button>
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }

@@ -36,10 +36,6 @@
           "type": "number",
           "description": "The order of the task for custom sorting."
         },
-        "notificationsEnabled": {
-          "type": "boolean",
-          "description": "Whether notifications are enabled for this specific task."
-        },
         "googleEventId": {
           "type": "string",
           "description": "The ID of the Google Calendar event this task was imported from."
