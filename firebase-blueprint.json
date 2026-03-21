@@ -90,6 +90,24 @@
         }
       },
       "required": ["userId", "title", "createdAt", "updatedAt"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user's profile and role information.",
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "enum": ["admin", "user"],
+          "description": "The role of the user."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email of the user."
+        }
+      },
+      "required": ["role", "email"]
     }
   },
   "firestore": {
@@ -104,6 +122,12 @@
         "$ref": "#/entities/Note"
       },
       "description": "Stores notes for all users."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/User"
+      },
+      "description": "Stores user profiles and roles."
     }
   }
 }

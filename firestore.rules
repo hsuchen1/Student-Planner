@@ -28,11 +28,23 @@ service cloud.firestore {
     //   - createdAt: string (required, immutable, ISO 8601 format) - When the note was created.
     //   - updatedAt: string (required, ISO 8601 format) - When the note was last updated.
     //
+    // Collection: users
+    // Document ID: userId
+    // Fields:
+    //   - role: string (required, enum: 'admin', 'user') - The role of the user.
+    //   - email: string (required, max length 200) - The email of the user.
+    //
     // ===============================================================
 
     // Helper Functions
     function isAuthenticated() {
       return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "dyes101184@gmail.com" && request.auth.token.email_verified == true));
     }
 
     function isDocOwner() {
@@ -83,18 +95,30 @@ service cloud.firestore {
              isValidDateString(data.updatedAt);
     }
 
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['role', 'email']) &&
+             data.role in ['admin', 'user'] &&
+             data.email is string && data.email.size() <= 200;
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create: if isAuthenticated() && (request.auth.uid == userId) && isValidUser(request.resource.data) && (request.resource.data.role == 'user' || isAdmin());
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin()) && isValidUser(request.resource.data) && (request.resource.data.role == resource.data.role || isAdmin());
+    }
+
     match /tasks/{taskId} {
-      allow read: if isDocOwner();
+      allow read: if isDocOwner() || isAdmin();
       allow create: if isAuthenticated() && isValidTask(request.resource.data) && uidUnchanged();
-      allow update: if isDocOwner() && isValidTask(request.resource.data) && uidNotModified() && areImmutableFieldsUnchanged(['createdAt']);
-      allow delete: if isDocOwner();
+      allow update: if (isDocOwner() || isAdmin()) && isValidTask(request.resource.data) && uidNotModified() && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isDocOwner() || isAdmin();
     }
 
     match /notes/{noteId} {
-      allow read: if isDocOwner();
+      allow read: if isDocOwner() || isAdmin();
       allow create: if isAuthenticated() && isValidNote(request.resource.data) && uidUnchanged();
-      allow update: if isDocOwner() && isValidNote(request.resource.data) && uidNotModified() && areImmutableFieldsUnchanged(['createdAt']);
-      allow delete: if isDocOwner();
+      allow update: if (isDocOwner() || isAdmin()) && isValidNote(request.resource.data) && uidNotModified() && areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isDocOwner() || isAdmin();
     }
   }
 }
