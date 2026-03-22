@@ -10,13 +10,12 @@ export function NotificationManager() {
 
     const q = query(
       collection(db, 'tasks'),
-      where('userId', '==', auth.currentUser.uid),
-      where('completed', '==', false),
-      where('reminderEnabled', '==', true)
+      where('userId', '==', auth.currentUser.uid)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const tasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+      const allTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+      const tasks = allTasks.filter(t => !t.completed && t.reminderEnabled);
       
       const checkTasks = () => {
         if (!('Notification' in window) || Notification.permission !== 'granted') return;

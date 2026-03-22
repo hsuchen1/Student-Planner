@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, doc, writeBatch } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, doc, writeBatch } from 'firebase/firestore';
 import { db, auth, handleFirestoreError, OperationType } from '../firebase';
 import { format } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
@@ -42,8 +42,7 @@ export function Notes() {
 
     const q = query(
       collection(db, 'notes'),
-      where('userId', '==', auth.currentUser.uid),
-      orderBy('updatedAt', 'desc')
+      where('userId', '==', auth.currentUser.uid)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -51,6 +50,10 @@ export function Notes() {
         id: doc.id,
         ...doc.data()
       })) as Note[];
+      
+      // Sort on the client side to avoid requiring a composite index
+      notesData.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+      
       setNotes(notesData);
       setLoading(false);
     }, (error) => {
