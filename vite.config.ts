@@ -12,7 +12,10 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['icon.svg'],
+        includeAssets: ['icon.svg', 'icon-192.png', 'icon-512.png'],
+        devOptions: {
+          enabled: true
+        },
         manifest: {
           name: '學生記事本',
           short_name: '記事本',
@@ -20,16 +23,19 @@ export default defineConfig(({mode}) => {
           theme_color: '#4f46e5',
           background_color: '#ffffff',
           display: 'standalone',
+          start_url: '/',
           icons: [
             {
-              src: 'icon.svg',
+              src: 'icon-192.png',
               sizes: '192x192',
-              type: 'image/svg+xml'
+              type: 'image/png',
+              purpose: 'any maskable'
             },
             {
-              src: 'icon.svg',
+              src: 'icon-512.png',
               sizes: '512x512',
-              type: 'image/svg+xml'
+              type: 'image/png',
+              purpose: 'any maskable'
             }
           ]
         }
