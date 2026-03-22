@@ -25,7 +25,7 @@ export default defineConfig(({mode}) => {
           background_color: '#ffffff',
           display: 'standalone',
           orientation: 'portrait',
-          start_url: '/',
+          start_url: './',
           icons: [
             {
               src: 'icon-192.png',
@@ -55,7 +55,7 @@ export default defineConfig(({mode}) => {
         }
       })
     ],
-    base: '/',
+    base: './',
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
