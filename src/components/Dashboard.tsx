@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
-import { motion } from 'motion/react';
-import { BookOpen, CheckSquare, LogOut, Moon, Sun } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { BookOpen, CheckSquare, LogOut, Moon, Sun, Settings as SettingsIcon } from 'lucide-react';
 import { Tasks } from './Tasks';
 import { Notes } from './Notes';
+import { Settings } from './Settings';
+import { NotificationManager } from './NotificationManager';
 import { cn } from '../utils/cn';
 import { ConfirmModal } from './ConfirmModal';
 
 export function Dashboard() {
-  const [activeTab, setActiveTab] = useState<'tasks' | 'notes'>('tasks');
+  const [activeTab, setActiveTab] = useState<'tasks' | 'notes' | 'settings'>('tasks');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -27,6 +29,13 @@ export function Dashboard() {
     }
   }, [isDarkMode]);
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('app-theme');
+    if (savedTheme && savedTheme !== 'default') {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  }, []);
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -38,6 +47,7 @@ export function Dashboard() {
   const navItems = [
     { id: 'tasks', label: '任務與考試', icon: CheckSquare },
     { id: 'notes', label: '學習筆記', icon: BookOpen },
+    { id: 'settings', label: '通知與設定', icon: SettingsIcon },
   ];
 
   return (
@@ -53,13 +63,13 @@ export function Dashboard() {
       {/* Mobile Header */}
       <div className="md:hidden bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between sticky top-0 z-20 transition-colors">
         <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-          <BookOpen className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+          <BookOpen className="w-6 h-6 text-primary-600 dark:text-primary-400" />
           <span className="text-lg">學生記事本</span>
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-2 text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
           >
             {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
           </button>
@@ -76,7 +86,7 @@ export function Dashboard() {
       <aside className="hidden md:flex sticky top-0 left-0 h-screen w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col z-10 transition-colors">
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3 font-bold text-xl text-slate-900 dark:text-white">
-            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 rounded-xl flex items-center justify-center">
               <BookOpen className="w-6 h-6" />
             </div>
             <span>學生記事本</span>
@@ -92,13 +102,13 @@ export function Dashboard() {
                 key={item.id}
                 onClick={() => setActiveTab(item.id as any)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors text-left",
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-left",
                   isActive
-                    ? "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-primary-50 dark:bg-primary-500/10 text-primary-700 dark:text-primary-400 scale-100"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white hover:scale-[1.02]"
                 )}
               >
-                <Icon className={cn("w-5 h-5", isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-400 dark:text-slate-500")} />
+                <Icon className={cn("w-5 h-5 transition-colors", isActive ? "text-primary-600 dark:text-primary-400" : "text-slate-400 dark:text-slate-500")} />
                 {item.label}
               </button>
             );
@@ -140,16 +150,21 @@ export function Dashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 pb-24 md:pb-8 md:p-8 overflow-x-hidden">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className="max-w-4xl mx-auto"
-        >
-          {activeTab === 'tasks' ? <Tasks /> : <Notes />}
-        </motion.div>
+      <main className="flex-1 p-4 pb-24 md:pb-8 md:p-8 overflow-x-hidden relative">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+            className="max-w-4xl mx-auto w-full"
+          >
+            {activeTab === 'tasks' && <Tasks />}
+            {activeTab === 'notes' && <Notes />}
+            {activeTab === 'settings' && <Settings />}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Mobile Bottom Navigation */}
@@ -162,16 +177,17 @@ export function Dashboard() {
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
               className={cn(
-                "flex-1 flex flex-col items-center justify-center py-3 gap-1 transition-colors",
-                isActive ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                "flex-1 flex flex-col items-center justify-center py-3 gap-1 transition-all duration-200",
+                isActive ? "text-primary-600 dark:text-primary-400 scale-110" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               )}
             >
-              <Icon className={cn("w-6 h-6", isActive ? "fill-indigo-50 dark:fill-indigo-500/20" : "")} />
+              <Icon className={cn("w-6 h-6 transition-colors", isActive ? "fill-primary-50 dark:fill-primary-500/20" : "")} />
               <span className="text-xs font-medium">{item.label}</span>
             </button>
           );
         })}
       </div>
+      <NotificationManager />
     </div>
   );
 }

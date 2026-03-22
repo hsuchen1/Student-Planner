@@ -219,7 +219,7 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
       >
         <div className="flex items-center justify-between p-4 md:p-6 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl">
+            <div className="p-2 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-xl">
               <CalendarIcon className="w-5 h-5" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">從 Google 日曆匯入</h2>
@@ -260,7 +260,7 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
                       onChange={(date: Date | null) => date && setStartDate(date)}
                       dateFormat="yyyy/MM/dd"
                       locale={zhTW}
-                      className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
                       wrapperClassName="w-full"
                     />
                   </div>
@@ -272,7 +272,7 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
                       dateFormat="yyyy/MM/dd"
                       locale={zhTW}
                       minDate={startDate}
-                      className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
                       wrapperClassName="w-full"
                     />
                   </div>
@@ -281,7 +281,7 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
                 <div className="pt-4 flex justify-end">
                   <button
                     onClick={handleFetchEvents}
-                    className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-colors shadow-sm"
+                    className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-medium transition-colors shadow-sm"
                   >
                     授權並抓取行程
                   </button>
@@ -297,7 +297,7 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="flex flex-col items-center justify-center py-12 space-y-4"
               >
-                <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+                <Loader2 className="w-10 h-10 text-primary-500 animate-spin" />
                 <p className="text-slate-600 dark:text-slate-400 font-medium">正在連線至 Google 日曆...</p>
               </motion.div>
             )}
@@ -327,7 +327,7 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
                     </button>
                     <button
                       onClick={() => setStep('date-select')}
-                      className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+                      className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
                     >
                       重新選擇日期
                     </button>
@@ -381,7 +381,7 @@ export function CalendarImportModal({ isOpen, onClose }: CalendarImportModalProp
                               "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                               event.imported 
                                 ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 cursor-default"
-                                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm disabled:opacity-50"
+                                : "bg-primary-600 hover:bg-primary-700 text-white shadow-sm disabled:opacity-50"
                             )}
                           >
                             {event.importing ? (

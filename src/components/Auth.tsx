@@ -29,7 +29,7 @@ export function Auth() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 max-w-md w-full text-center"
       >
-        <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <BookOpen className="w-8 h-8" />
         </div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">學生記事本</h1>
@@ -46,7 +46,7 @@ export function Auth() {
         <button
           onClick={handleLogin}
           disabled={loading}
-          className="w-full bg-slate-900 dark:bg-indigo-600 text-white hover:bg-slate-800 dark:hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed py-3.5 px-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-colors text-lg"
+          className="w-full bg-slate-900 dark:bg-primary-600 text-white hover:bg-slate-800 dark:hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed py-3.5 px-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-colors text-lg"
         >
           {loading ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
