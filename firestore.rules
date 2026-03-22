@@ -64,10 +64,10 @@ service cloud.firestore {
       return hasOnlyAllowedFields(['userId', 'title', 'type', 'dueDate', 'completed', 'createdAt', 'order', 'googleEventId', 'reminderEnabled']) &&
              data.userId is string && data.userId.size() > 0 &&
              data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
-             data.type in ['assignment', 'exam', 'report', 'project', 'other'] &&
-             isValidDateString(data.dueDate) &&
-             data.completed is bool &&
-             isValidDateString(data.createdAt) &&
+             (!('type' in data) || data.type in ['assignment', 'exam', 'report', 'project', 'other']) &&
+             (!('dueDate' in data) || data.dueDate is string || data.dueDate is number) &&
+             (!('completed' in data) || data.completed is bool) &&
+             (!('createdAt' in data) || data.createdAt is string || data.createdAt is number) &&
              (!('order' in data) || data.order is number) &&
              (!('googleEventId' in data) || (data.googleEventId is string && data.googleEventId.size() <= 200)) &&
              (!('reminderEnabled' in data) || data.reminderEnabled is bool);
@@ -80,8 +80,8 @@ service cloud.firestore {
              (!('content' in data) || (data.content is string && data.content.size() <= 10000)) &&
              (!('type' in data) || data.type in ['text', 'list']) &&
              (!('listItems' in data) || (data.listItems is list && data.listItems.size() <= 200)) &&
-             isValidDateString(data.createdAt) &&
-             isValidDateString(data.updatedAt);
+             (!('createdAt' in data) || data.createdAt is string || data.createdAt is number) &&
+             (!('updatedAt' in data) || data.updatedAt is string || data.updatedAt is number);
     }
 
     match /tasks/{taskId} {
