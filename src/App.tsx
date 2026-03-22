@@ -9,6 +9,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { Auth } from './components/Auth';
 import { Dashboard } from './components/Dashboard';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { PwaPrompt } from './components/PwaPrompt';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -42,6 +43,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       {user ? <Dashboard /> : <Auth />}
+      <PwaPrompt />
     </ErrorBoundary>
   );
 }
